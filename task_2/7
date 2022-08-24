@@ -1,0 +1,15 @@
+SELECT last_name_student, id_group, ROUND(average_score,2)
+FROM (SELECT number_record_book, AVG(CAST(score AS int)) as average_score
+	  FROM "SESSION".passing_exam
+	 WHERE score NOT IN ('Зачёт', 'Незачёт')
+	 GROUP BY number_record_book) as all_students
+INNER JOIN "SESSION".stydying_student USING (number_record_book)
+INNER JOIN "SESSION".student USING (id_student)
+WHERE (id_group, average_score) = ANY(SELECT id_group, MAX(average_score) 
+									  FROM (SELECT number_record_book, AVG(CAST(score AS int)) as average_score
+											FROM "SESSION".passing_exam
+											WHERE score NOT IN ('Зачёт', 'Незачёт')
+											GROUP BY number_record_book) as all_students
+									  INNER JOIN "SESSION".stydying_student USING (number_record_book)
+									 GROUP BY id_group)
+ORDER BY id_group, last_name_student

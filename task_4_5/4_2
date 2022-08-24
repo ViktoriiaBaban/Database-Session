@@ -1,0 +1,14 @@
+CREATE PROCEDURE "SESSION".update_course()
+LANGUAGE plpgsql AS
+$$
+BEGIN
+UPDATE "SESSION".group
+SET course = course + 1,
+    group_number = CONCAT(SUBSTRING(group_number, 1, 2), 
+						  CAST(SUBSTRING(group_number, 3, 1) AS INT) + 1, 
+						  SUBSTRING(group_number, 4, 3)),
+	study_year = CONCAT(CAST(SUBSTRING(study_year, 1, 4) AS INT) + 1, '/', 
+						CAST(SUBSTRING(study_year, 6, 4) AS INT) + 1)
+WHERE CAST(SUBSTRING(group_number, 3, 1) AS INT) != 4;
+END;
+$$;

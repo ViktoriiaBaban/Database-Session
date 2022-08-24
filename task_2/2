@@ -1,0 +1,7 @@
+SELECT last_name_student, name_student, patronymic_student, last_name_teacher 
+FROM "SESSION".passing_exam
+INNER JOIN "SESSION".shedule_session USING (id_shedule)
+INNER JOIN "SESSION".stydying_student USING (number_record_book)
+INNER JOIN "SESSION".student USING (id_student)
+INNER JOIN "SESSION".teacher USING (id_teacher)
+WHERE (attempt_number = 1) AND (score = '2')

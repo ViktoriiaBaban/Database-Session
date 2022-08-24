@@ -1,0 +1,12 @@
+CREATE VIEW "SESSION".failed_students AS
+SELECT DISTINCT "SESSION".passing_exam.number_record_book AS number_record_book,
+                "SESSION".student.last_name_student AS last_name_student,
+	            "SESSION".student.name_student AS name_student
+FROM "SESSION".stydying_student
+INNER JOIN "SESSION".student USING (id_student)
+INNER JOIN "SESSION".passing_exam USING (number_record_book)
+WHERE '2' = ANY (SELECT "SESSION".passing_exam.score AS score
+				FROM "SESSION".passing_exam
+				WHERE "SESSION".stydying_student.number_record_book = "SESSION".passing_exam.number_record_book 
+				 AND attempt_number = 3);
+

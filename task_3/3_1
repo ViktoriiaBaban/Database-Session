@@ -1,0 +1,13 @@
+CREATE VIEW "SESSION".failed_attempt AS
+SELECT "SESSION".passing_exam.number_record_book AS number_record_book, 
+       "SESSION".student.last_name_student AS last_name_student,
+       "SESSION".passing_exam.score AS score, 
+	   "SESSION".teacher.last_name_teacher AS last_name_teacher
+FROM "SESSION".passing_exam
+INNER JOIN "SESSION".shedule_session USING (id_shedule)
+INNER JOIN "SESSION".stydying_student USING (number_record_book)
+INNER JOIN "SESSION".student USING (id_student)
+INNER JOIN "SESSION".teacher USING (id_teacher)
+WHERE attempt_number = 1 AND score < '3';
+
+SELECT * FROM "SESSION".failed_attempt;

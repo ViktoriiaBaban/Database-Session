@@ -1,0 +1,10 @@
+SELECT DISTINCT id_group, last_name_student, name_student, ROUND(average_score,2), scolarship
+FROM (SELECT number_record_book, 
+	         AVG(CAST(score AS int)) as average_score, 
+	         MIN(CASE WHEN score > '3' AND score != 'Незачёт' THEN 1 ELSE 0 END) AS scolarship 
+	  FROM "SESSION".passing_exam
+	  WHERE score NOT IN ('Зачёт', 'Незачёт')
+	  GROUP BY number_record_book) as students
+INNER JOIN "SESSION".stydying_student USING (number_record_book)
+INNER JOIN "SESSION".student USING (id_student)
+ORDER BY id_group, last_name_student

@@ -1,0 +1,21 @@
+CREATE OR REPLACE PROCEDURE "SESSION".raise_scholarship()
+LANGUAGE plpgsql AS
+$$
+BEGIN
+UPDATE "SESSION".scholarship
+SET size_scholarship = size_scholarship * 1.1, type_scholarship = 'Повышенная',
+    payment_start_date= (CASE WHEN date_part('month', payment_start_date) = 2 
+						 THEN payment_start_date + INTERVAL '5 months'
+						 ELSE payment_start_date + INTERVAL '7 months' END), 
+	payment_end_date= (CASE WHEN date_part('month', payment_end_date) = 1 
+					   THEN payment_end_date + INTERVAL '5 months'
+					   ELSE payment_end_date + INTERVAL '7 months  1 day' END)	
+WHERE id_scholarship IN (SELECT id_scholarship FROM "SESSION".scholarship 
+						 WHERE number_record_book IN (SELECT DISTINCT number_record_book FROM "SESSION".passing_exam AS q
+                                                      WHERE (SELECT AVG(CAST(score AS int)) 
+															 FROM "SESSION".passing_exam AS b 
+															 WHERE q.number_record_book = b.number_record_book 
+															 AND (score NOT IN ('Зачёт', 'Незачёт'))) = 5)
+						AND  CURRENT_TIMESTAMP BETWEEN payment_start_date AND payment_end_date);
+END;
+$$;

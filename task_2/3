@@ -1,0 +1,9 @@
+SELECT DISTINCT last_name_student FROM "SESSION".passing_exam
+INNER JOIN "SESSION".stydying_student USING (number_record_book)
+INNER JOIN "SESSION".student USING (id_student)
+WHERE (score NOT IN ('Зачёт', 'Незачёт')) AND  
+(CAST(score AS int) > (SELECT AVG(CAST(score AS int)) 
+					   FROM "SESSION".passing_exam
+					   INNER JOIN "SESSION".shedule_session USING (id_shedule)
+					   INNER JOIN "SESSION".subject USING (id_subject)
+					   WHERE name_subject = 'Математика'))

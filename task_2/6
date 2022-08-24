@@ -1,0 +1,13 @@
+SELECT DISTINCT number_record_book, last_name_student, name_student 
+FROM (SELECT number_record_book, 
+	         SUM(CASE WHEN score >= '3' AND score != 'Незачёт' 
+				 THEN 1 ELSE 0 END) as sum_score
+	  FROM "SESSION".passing_exam
+	  GROUP BY number_record_book) as scores
+INNER JOIN "SESSION".stydying_student USING (number_record_book)
+INNER JOIN "SESSION".student USING (id_student)
+INNER JOIN (SELECT id_group, COUNT(id_shedule) as count_exams FROM "SESSION".shedule_session
+			WHERE exam_status = 'Проведен'
+		    GROUP BY id_group) as counts USING (id_group)
+WHERE sum_score = count_exams
+ORDER BY last_name_student

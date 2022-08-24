@@ -1,0 +1,5 @@
+SELECT exam_date, name_subject, last_name_teacher 
+FROM "SESSION".shedule_session 
+INNER JOIN "SESSION".subject USING (id_subject)
+INNER JOIN "SESSION".teacher USING (id_teacher)
+WHERE id_group = (SELECT id_group FROM "SESSION".group WHERE group_number = 'K3240')

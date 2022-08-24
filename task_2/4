@@ -1,0 +1,10 @@
+SELECT name_direction, group_number, ROUND(total, 2)
+FROM (SELECT id_group, AVG(CAST(score AS int)) as total 
+	  FROM "SESSION".passing_exam
+	  INNER JOIN "SESSION".shedule_session USING (id_shedule)
+	  WHERE score NOT IN ('Зачёт', 'Незачёт')
+	  GROUP BY id_group) as groups
+INNER JOIN "SESSION".group USING (id_group)
+INNER JOIN "SESSION".direction USING (id_direction)
+WHERE name_direction = 'Прикладная информатика'
+ORDER BY total DESC

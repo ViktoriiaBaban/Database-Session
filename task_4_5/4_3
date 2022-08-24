@@ -1,0 +1,13 @@
+CREATE OR REPLACE PROCEDURE "SESSION".retake(shedule_id INTEGER, number_rec_book INTEGER, new_score VARCHAR(10))
+LANGUAGE plpgsql AS
+$$
+BEGIN
+INSERT INTO "SESSION".passing_exam(
+	id_shedule, attempt_number, number_record_book, score)
+VALUES (shedule_id, 
+		(SELECT MAX(attempt_number) FROM "SESSION".passing_exam
+					 WHERE id_shedule = shedule_id AND number_record_book = number_rec_book) + 1, 
+		number_rec_book, 
+		new_score);
+END;
+$$;
